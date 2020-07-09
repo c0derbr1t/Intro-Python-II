@@ -5,13 +5,13 @@ from room import Room
 class Player:
     def __init__(self, name, room, rm_str):
         self.rm_str = rm_str
-        self.room = [room.title, room.description]
+        self.current_room = room
         self.name = name
         self.items = []
 
     def __str__(self):
         output = f"Name: {self.name}\n"
-        room = f"Room: {self.room[0]}\nDesc: {self.room[1]}\n"
+        room = f"Room: {self.current_room.title}\nDesc: {self.current_room.description}\n"
         if len(self.items) > 0:
             itm_str = ", "
             items = f"Items: {itm_str.join(self.items)}"
@@ -20,10 +20,8 @@ class Player:
         return output + room + items
 
     def change_room(self, room): # expects room["room"]
-        if self.room[rm_str].dir == None:
-            print("You've ran into a wall! You might want to go a different direction...")
-        else:
-            self.room = self.room.dir
+        self.current_room = room
+        
 
     def list_inventory(self):
         print(f"You are holding {str(self.items)}.")
