@@ -1,10 +1,12 @@
 from room import Room
+from player import Player
+import textwrap
 
 # Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons."),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -49,3 +51,44 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+def welcome():
+    print(
+        "\nWelcome to Britt's Adventure! This is a quick little text-based game.\n\nYou are faced with several rooms. You'll move by entering 'n' to go North, 'e' to go East, 's' to go South, and 'w' to go West!\n\nYour task is to find the Treasure Room, then escape back outside to win!\n"
+    )
+
+def user():
+    name = input("What is your name, adventurer?\n-->  ")
+    global user 
+    user = Player(name, room["outside"], "outside")
+
+def play():
+    if user.rm_str == "outside":
+        print(f"You are {user.room[0]}. {user.room[1]}. ")
+        user_choice = input(f"Which direction would you like to move, {user.name}?\n-->  ")
+        # TODO: Figure out logic for changing rooms.
+        if user_choice == "n":
+            new_room = room[user.rm_str].n_to
+            print(new_room)
+            # user.change_room(f"{user_choice}_to")
+    
+# def play():
+#     if user.room != "treasure":
+#         description = textwrap.wrap(user.room[description], width=50)
+#         title = user.room[title]
+#         print(f"You are currently in the {title}.\n")
+#         print(f"{description}\n")
+#         user_choice = input(f"{user.name}, what would you like to do?\n-->  ")
+#         if user_choice === "n" or user_choice == "e" or user_choice == "s" or user_choice == "w":
+#             pass
+#         else:
+#             print("That's not a valid choice. Please enter 'n', 'e', 'w', or 's'!")
+#             print("You've ran into a wall! You might want to go a different direction...")
+    
+welcome()
+user()
+play()
+print(user)
+print(user.rm_str)
+print(user.room)
+# play()
