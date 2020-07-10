@@ -12,7 +12,8 @@ room = {
 
     'overlook': Room("Grand Overlook", "A steep cliff appears before you, falling into the darkness. Ahead to the north, a light flickers in the distance, but there is no way across the chasm.", 100),
 
-    'platform': Room("Distant Platform", "You fly across the chasm faster than you could even imagine, the shadowy depths blurring below you! You land and the rock is scarred with scorch marks, gouges, and 🩸SO MUCH BLOOD🩸! It feels ominous....maybe you should head back to the cave?"),
+    'platform': Room("Distant Platform", "You fly across the chasm faster than you could even imagine, the shadowy depths blurring below you! You land and the rock is scarred with scorch marks, gouges, and 🩸SO MUCH BLOOD🩸! It feels ominous....and...THERE'S NO WAY OUT! You spend the rest of your short life on this platform. Everything fades to gray..."),
+    ## future end to description:  maybe you should head back to the cave?
 
     'narrow':   Room("Narrow Passage", "The narrow passage bends here from west to north. The smell of gold permeates the air.", 100),
 
@@ -122,11 +123,9 @@ def rm(i):
 playing = True
 def welcome():
     reset_room_items()
-    user.items = []
     print(
         "\nWelcome to Britt's Adventure! This is a quick little text-based game.\n\nYou are faced with several rooms. You'll move by entering [n] to go North, [e] to go East, [s] to go South, [w] to go West. There are other options as well, just enter [h] for controls. 😁\n\nYour task is to find the Treasure Room, then escape back outside to win!\n"
     )
-    user()
 
 def help_msg():
     return "\n\nMovement:\n[n] --> go North\n[e] --> go East\n[s] --> go South\n[w] --> go West\n\nActions:\n[l] --> look to see what is in the room\n[g] --> check room for gold\n[$] --> check your gold\n[i] --> view your inventory\n[p 'item_name'] --> pick up an item\n[d 'item_name'] --> drop an item\n[p gold #] --> pickup an amount of gold\n[d gold #] --> drop an amount of gold\n\nOther:\n[c 'player_name'] --> change your player name\n[q] --> quit the game"
@@ -233,27 +232,30 @@ def play():
             else:
                 new_rm = rm(instruction.title)
                 if new_rm == "platform" and "feather" in user.items:
-                    user.change_room(room[new_rm])
-                elif user.current_room == "platform" and "feather" in user.items:
-                    print("\n\nYou fly back across the chasm just as quickly. It takes your breath away.\n\n")
-                    user.change_room(room[new_rm])
+                    user.change_room(room["platform"])
+                    print(room["platform"].description)
+                    print("Your eyes close...\n\n\n\nYou are standing in front of a cave...how did you get here?\n\n\n")
+                    user.change_room(room["outside"])
                 elif new_rm == "platform" and "feather" not in user.items:
                     print("There must be a way to get there...I wonder what it is?")
-                elif user.current_room == "platform" and "feather" not in user.items:
-                    print("I have to go back to the Outlook the same way I got here.")
-                elif new_rm == "outside" and ("treasure_a" in user.items) or ("treasure_b" in user.items):
+                elif new_rm == "outside" and ("treasure_a" in user.items):
                     if "bonus_treasure" in user.items:
                         print(f"You found the bonus treasure! You look at it and see:\n{bonus_treasure.description}. Woah...this sounds dangerous!")
-                    if "treasure_a" in user.items:
-                        print(f"You look at the treasure you found...You see:\n {a_treasure.description}. You are elated!")
-                    if "treasure_b" in user.items:
-                        print(f"You look at the treasure you found...You see:\n{b_treasure.description}. You are so disappointed!")
+                    print(f"You look at the treasure you found...You see:\n {a_treasure.description}. You are elated!")
+                    print("\n\nYOU'VE WON!!!! You have escaped the cave with the treasure!\n\nYou're so excited, but your vision begins to get hazy. Why are you here? What are you doing in front of this cave...\n\n\n")
+                    user.change_room(room["outside"])
+                    user.items = []
+                elif new_rm =="outside" and ("treasure_b" in user.items):
+                    if "bonus_treasure" in user.items:
+                        print(f"You found the bonus treasure! You look at it and see:\n{bonus_treasure.description}. Woah...this sounds dangerous!")
+                    print(f"You look at the treasure you found...You see:\n{b_treasure.description}. You are so disappointed!")
                     
                     print("\n\nYOU'VE WON!!!! You have escaped the cave with the treasure!\n\nYou're so excited, but your vision begins to get hazy. Why are you here? What are you doing in front of this cave...\n\n\n")
-                    welcome()
+                    user.change_room(room["outside"])
+                    user.items = []
                 else:
                     user.change_room(room[new_rm])
-                    print(f"\nYou walk through the doorway into {instruction.title}.")
+                    # print(f"\nYou walk through the doorway into {instruction.title}.")
         else:
             if user_room_title == "Outside Cave Entrance":
                 print("\nYou wander around in the open for a while, then return to the Outside Cave Entrance.")
@@ -261,4 +263,5 @@ def play():
                 print("\nYou've ran into a wall! You might want to go a different direction...")
     
 welcome()
+user()
 play()
