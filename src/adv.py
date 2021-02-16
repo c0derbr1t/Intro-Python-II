@@ -1,10 +1,12 @@
 from room import Room
+from player import Player
+import textwrap
 
 # Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons."),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -49,3 +51,76 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+def dir(input):
+    switcher = {
+        "n": "n_to",
+        "e": "e_to",
+        "s": "s_to",
+        "w": "w_to",
+        "q": "quit"
+    }
+    return switcher.get(input, "Invalid Choice.")
+
+def rm(i):
+    switcher = {
+        "Outside Cave Entrance": "outside",
+        "Foyer": "foyer",
+        "Grand Overlook": "overlook",
+        "Narrow Passage": "narrow",
+        "Treasure Chamber": "treasure"
+    }
+    return switcher.get(i, "That room does not exist.")
+
+def welcome():
+    print(
+        "\nWelcome to Britt's Adventure! This is a quick little text-based game.\n\nYou are faced with several rooms. You'll move by entering [n] to go North, [e] to go East, [s] to go South, [w] to go West, or [q] to quit!\n\nYour task is to find the Treasure Room, then escape back outside to win!\n"
+    )
+
+
+
+def user():
+    name = input("What is your name, adventurer?\n-->  ")
+    global user 
+    user = Player(name, room["outside"], "outside")
+
+def get_user_choice():
+    user_choice = input(f"\nWhich direction would you like to move, {user.name}?\n-->  ")
+    return user_choice
+
+def play():
+    playing = True
+    while playing:
+        print(f"\nYou are standing in the {user.current_room.title}. {user.current_room.description}.")
+        user_choice = get_user_choice()
+        user_room_str = rm(user.current_room.title)
+        user_room_title = user.current_room.title
+
+        if user_choice == "n":
+            direction = room[user_room_str].n_to
+        elif user_choice == "e":
+            direction = room[user_room_str].e_to
+        elif user_choice == "s":
+            direction = room[user_room_str].s_to
+        elif user_choice == "w":
+            direction = room[user_room_str].w_to
+        elif user_choice == "q":
+            direction = "quit"
+
+        if direction:
+            if direction == "quit":
+                print("Thank you for playing Britt's Adventure!!!")
+                playing = False
+            else:
+                new_rm = rm(direction.title)
+                user.change_room(room[new_rm])
+                print(f"\nYou walk through the doorway into {direction.title}.")
+        else:
+            if user_room_title == "Outside Cave Entrance":
+                print("\nYou wander around in the open for a while, then return to the Outside Cave Entrance.")
+            else:
+                print("\nYou've ran into a wall! You might want to go a different direction...")
+    
+welcome()
+user()
+play()
